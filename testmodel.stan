@@ -2,8 +2,10 @@
 data {
   int<lower=0> N;
   int<lower=0> M;
+  int<lower=0> P;
   int<lower=0,upper=1> y[N]; // target
   row_vector[M] x[N]; // variables
+  row_vector[M] pred_x[P];
 }
 
 // The parameters accepted by the model. Our model
@@ -19,6 +21,7 @@ parameters {
 // 'y' to be normally distributed with mean 'mu'
 // and standard deviation 'sigma'.
 model {
+
   alpha ~ normal(0, 100);
   for (m in 1:M) {
     mu[m] ~ normal(0, 100);
@@ -29,5 +32,12 @@ model {
     y[n] ~ bernoulli_logit(alpha + x[n] * beta);
   }
   
+}
+
+generated quantities {
+  int<lower=0,upper=1> y_pred[P];
+  for (p in 1:P) {
+    y_pred[p] = bernoulli_rng(inv_logit(alpha + pred_x[p]*beta));
+  }
 }
 
