@@ -8,38 +8,36 @@ data {
   int<lower=1,upper=4> pred_cp[P]; //chest pain types in prediction data
   
   row_vector[D] x[N]; //data
-  row_vector[D] pred_x[P]; // prediction data
-
+  row_vector[D] pred_x[P]; //prediction data
 }
 
 parameters {
-  real mu_0;
-  real<lower=0> sigma_0;
+  vector[4] mu_0;
+  vector<lower=0>[4] sigma_0;
   real beta_0[4];
-  real mu[D];
-  real<lower=0> sigma[D];
+  vector[4] mu[D];
+  vector<lower=0>[4] sigma[D];
   vector[D] beta[4];
-  
 }
 
 model {
   //priors
-  mu_0 ~ normal(0, 100);
-  sigma_0 ~ inv_chi_square(0.1);
-  for (i in 1:4)
-      beta_0[i] ~ normal(mu_0, sigma_0);
-  
+  for (i in 1:4) {
+      mu_0[i] ~ normal(0, 100);
+      sigma_0[i] ~ inv_chi_square(0.1);
+      beta_0[i] ~ normal(mu_0[i], sigma_0[i]);
+  }
   for (d in 1:D) {
-      mu[d] ~ normal(0, 100);
-      sigma[d] ~ inv_chi_square(0.1);
-      for (i in 1:4)
-          beta[i,d] ~ normal(mu[d], sigma[d]);
+      for (i in 1:4) {
+          mu[d][i] ~ normal(0, 100);
+          sigma[d][i] ~ inv_chi_square(0.1);
+          beta[i,d] ~ normal(mu[d][i], sigma[d][i]);
+      }
   }
 
   //likelihood
   for (n in 1:N)
       y[n] ~ bernoulli(inv_logit(beta_0[cp[n]] + x[n] * beta[cp[n]]));
-
 }
 
 generated quantities {

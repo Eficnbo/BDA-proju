@@ -7,9 +7,8 @@ data {
   int<lower=1,upper=4> cp[N]; //chest pain types (1,2,3,4) (hierarchical groups)
   int<lower=1,upper=4> pred_cp[P]; //chest pain types in prediction data
   
-  row_vector[D] x[N]; //data
-  row_vector[D] pred_x[P]; // prediction data
-
+  vector[D] x[N]; //data
+  vector[D] pred_x[P]; //prediction data
 }
 
 parameters {
@@ -18,8 +17,7 @@ parameters {
   real beta_0[4];
   real mu[D];
   real<lower=0> sigma[D];
-  vector[D] beta[4];
-  
+  row_vector[D] beta[4];
 }
 
 model {
@@ -38,8 +36,7 @@ model {
 
   //likelihood
   for (n in 1:N)
-      y[n] ~ bernoulli(inv_logit(beta_0[cp[n]] + x[n] * beta[cp[n]]));
-
+      y[n] ~ bernoulli(inv_logit(beta_0[cp[n]] + beta[cp[n]] * x[n]));
 }
 
 generated quantities {
@@ -48,9 +45,9 @@ generated quantities {
   
   //make predictions on new data
   for (p in 1:P)
-      y_pred[p] = bernoulli_rng(inv_logit(beta_0[pred_cp[p]] + x[p] * beta[pred_cp[p]]));
+      y_pred[p] = bernoulli_rng(inv_logit(beta_0[pred_cp[p]] + beta[pred_cp[p]] * pred_x[p]));
   
-  //calculate log likelihood for model evaluation
+  //calculate log likelihoods for model evaluation
   for (n in 1:N)
-      log_lik[n] = bernoulli_lpmf(y[n] | inv_logit(beta_0[cp[n]] + x[n] * beta[cp[n]]));
+      log_lik[n] = bernoulli_lpmf(y[n] | inv_logit(beta_0[cp[n]] + beta[cp[n]] * x[n]));
 }
