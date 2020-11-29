@@ -1,14 +1,14 @@
 data {
   int<lower=0> N; //number of observations
   int<lower=0> D; //number of dimensions in data excluding chest pain type
-  int<lower=0> P; // Number of predictions
+  int<lower=0> P; //number of predictions
   int<lower=0,upper=1> y[N]; //targets
   
   int<lower=1,upper=4> cp[N]; //chest pain types (1,2,3,4) (hierarchical groups)
   int<lower=1,upper=4> pred_cp[P]; //chest pain types in prediction data
   
   row_vector[D] x[N]; //data
-  row_vector[D] pred_x[P]; // prediction data
+  row_vector[D] pred_x[P]; //prediction data
 }
 
 parameters {
@@ -25,7 +25,7 @@ model {
   mu_0 ~ normal(0, 100);
   sigma_0 ~ inv_chi_square(0.1);
   for (i in 1:4)
-      beta_0 ~ normal(mu_0, sigma_0);
+      beta_0[i] ~ normal(mu_0, sigma_0);
   
   for (d in 1:D) {
       mu[d] ~ normal(0, 100);
@@ -36,7 +36,7 @@ model {
 
   //likelihood
   for (n in 1:N)
-     y[n] ~ bernoulli(inv_logit(beta_0[cp[n]] + x[n] * beta[cp[n]]));
+      y[n] ~ bernoulli(inv_logit(beta_0[cp[n]] + x[n] * beta[cp[n]]));
 }
 
 generated quantities {
@@ -45,7 +45,7 @@ generated quantities {
   
   //make predictions on new data
   for (p in 1:P)
-    y_pred[p] = bernoulli_rng(inv_logit(beta_0[pred_cp[p]] + x[p] * beta[pred_cp[p]]));
+      y_pred[p] = bernoulli_rng(inv_logit(beta_0[pred_cp[p]] + x[p] * beta[pred_cp[p]]));
   
   //calculate log likelihood for model evaluation
   for (n in 1:N)
