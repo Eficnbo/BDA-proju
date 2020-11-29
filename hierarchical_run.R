@@ -11,7 +11,7 @@ columns <- c("age", "sex", "cp", "trestbps", "chol", "fbs",
              "thalach", "exang", "oldpeak", "target")
 
 colnames(good_data) <- columns
-good_data$age <- data$age
+good_data$age <- data$ï..age
 good_data$sex <- data$sex
 good_data$cp <- data$cp + 1
 good_data$trestbps <- data$trestbps
@@ -32,14 +32,16 @@ N_test <- 33
 
 data_train <- head(shuffled, N - N_test)
 data_test <- tail(shuffled, N_test)
-x_train <- select(data_train,'age':'oldpeak')
-x_test <- select(data_test,'age':'oldpeak')
+x_train <- select(data_train,'age','sex','trestbps':'oldpeak')
+x_test <- select(data_test,'age','sex','trestbps':'oldpeak')
 
-standata <- list(y=data_train$target, N=nrow(data_train), P=nrow(data_test), x1=x_train$age, x2=x_train$sex, x3=x_train$trestbps, x4=x_train$chol, x5=x_train$fbs, x6=x_train$thalach, x7=x_train$exang, x8=x_train$oldpeak,
-                 x1_pred=x_test$age, x2_pred=x_test$sex, x3_pred=x_test$trestbps, x4_pred=x_test$chol, x5_pred=x_test$fbs, x6_pred=x_test$thalach, x7_pred=x_test$exang, x8_pred=x_test$oldpeak,
-                 cp=data_train$cp, cp_pred=data_test$cp)
+#standata <- list(y=data_train$target, N=nrow(data_train), P=nrow(data_test), x1=x_train$age, x2=x_train$sex, x3=x_train$trestbps, x4=x_train$chol, x5=x_train$fbs, x6=x_train$thalach, x7=x_train$exang, x8=x_train$oldpeak,
+#                 x1_pred=x_test$age, x2_pred=x_test$sex, x3_pred=x_test$trestbps, x4_pred=x_test$chol, x5_pred=x_test$fbs, x6_pred=x_test$thalach, x7_pred=x_test$exang, x8_pred=x_test$oldpeak,
+#                 cp=data_train$cp, cp_pred=data_test$cp)
 
-model <- stan(file = 'hierarchical_model.stan', data = standata)
+standata <- list(y=data_train$target, D=ncol(x_train), N=nrow(data_train), P=nrow(data_test), cp=data_train$cp, pred_cp=data_test$cp, x=x_train, pred_x=x_test)
+
+model <- stan(file = 'hierachical_model2.stan', data = standata, init=0.5)
 mon <- monitor(model)
 
 predictions <- data.frame(matrix(0L, ncol = 3, nrow = N_test))
