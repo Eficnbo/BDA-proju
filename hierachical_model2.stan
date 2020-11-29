@@ -38,7 +38,7 @@ model {
 
   //likelihood
   for (n in 1:N)
-      y[n] ~ bernoulli(inv_logit(beta_0[cp[n]] + x[n] * beta[cp[n]]));
+      y[n] ~ bernoulli_logit(beta_0[cp[n]] + x[n] * beta[cp[n]]);
 
 }
 
@@ -48,9 +48,12 @@ generated quantities {
   
   //make predictions on new data
   for (p in 1:P)
-      y_pred[p] = bernoulli_rng(inv_logit(beta_0[pred_cp[p]] + x[p] * beta[pred_cp[p]]));
+      //y_pred[p] = bernoulli_rng(inv_logit(beta_0[pred_cp[p]] + x[p] * beta[pred_cp[p]]));
+      //y_pred[p] = bernoulli_logit_rng(beta_0[pred_cp[p]] + x[p] * beta[pred_cp[p]]);
+      y_pred[p] = bernoulli_logit_rng(beta_0[pred_cp[p]] + pred_x[p] * beta[pred_cp[p]]);
   
   //calculate log likelihood for model evaluation
   for (n in 1:N)
-      log_lik[n] = bernoulli_lpmf(y[n] | inv_logit(beta_0[cp[n]] + x[n] * beta[cp[n]]));
+      //log_lik[n] = bernoulli_lpmf(y[n] | inv_logit(beta_0[cp[n]] + x[n] * beta[cp[n]]));
+      log_lik[n] = bernoulli_logit_lpmf(y[n] | beta_0[cp[n]] + x[n] * beta[cp[n]]);
 }
