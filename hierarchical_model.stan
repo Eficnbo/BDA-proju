@@ -25,9 +25,24 @@ model {
   for (i in 1:4)
       beta_0[i] ~ normal(mu_0, sigma_0);
       
+  mu[1] ~ normal(0, 100);
+  mu[2] ~ normal(0, 100);
+  mu[3] ~ normal(0, 0.01);
+  mu[4] ~ normal(0, 0.01);
+  mu[5] ~ normal(0, 0.01);
+  mu[6] ~ normal(0, 0.01);
+  mu[7] ~ normal(0, 0.01);
+  mu[8] ~ normal(0, 100);
+  sigma[1] ~ inv_chi_square(0.1);
+  sigma[2] ~ inv_chi_square(0.1);
+  sigma[3] ~ inv_chi_square(100);
+  sigma[4] ~ inv_chi_square(100);
+  sigma[5] ~ inv_chi_square(100);
+  sigma[6] ~ inv_chi_square(100);
+  sigma[7] ~ inv_chi_square(100);
+  sigma[8] ~ inv_chi_square(0.1);
+
   for (d in 1:D) {
-      mu[d] ~ normal(0, 100);
-      sigma[d] ~ inv_chi_square(0.1);
       for (i in 1:4)
           beta[i,d] ~ normal(mu[d], sigma[d]);
   }

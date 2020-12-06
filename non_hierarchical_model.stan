@@ -10,11 +10,7 @@ data {
 }
 
 parameters {
-  real mu_0;
-  real<lower=0> sigma_0;
   real beta_0[4];
-  real mu;
-  real<lower=0> sigma;
   row_vector[D] beta;
 }
 
@@ -23,8 +19,16 @@ model {
   for (i in 1:4)
       beta_0[i] ~ normal(0, 100);
       
-  for (d in 1:D)
-      beta[d] ~ normal(0, 100);
+  //for (d in 1:D)
+  //    beta[d] ~ normal(0, 100);
+  beta[1] ~ normal(0, 100);
+  beta[2] ~ normal(0, 100);
+  beta[3] ~ normal(0, 0.01);
+  beta[4] ~ normal(0, 0.01);
+  beta[5] ~ normal(0, 0.01);
+  beta[6] ~ normal(0, 0.01);
+  beta[7] ~ normal(0, 0.01);
+  beta[8] ~ normal(0, 100);
 
   //likelihood
   for (n in 1:N)

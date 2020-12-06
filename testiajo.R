@@ -12,7 +12,7 @@ columns <- c("age", "sex", "cp0", "cp1", "cp2", "cp3", "trestbps", "chol", "fbs"
             "ca0", "ca1", "ca2", "ca3", "ca4", "thal0", "thal1", "thal2", "thal3", "target")
 
 colnames(good_data) <- columns
-good_data$age <- data$age
+good_data$age <- data$ï..age
 good_data$sex <- data$sex
 good_data$trestbps <- data$trestbps
 good_data$chol <- data$chol
@@ -48,6 +48,7 @@ for (i in 1:N) {
   else good_data$thal3[i] <- 1
 }
 
+ggcorrplot(cor(good_data))
 
 # PREDICTING
 
