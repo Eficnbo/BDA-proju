@@ -3,6 +3,8 @@ library(loo)
 library(tidyverse)
 library(ggcorrplot)
 
+set.seed(130)
+
 data <- read.csv('heart.csv', sep=',')
 N <- nrow(data)
 
@@ -42,7 +44,7 @@ standata <- list(y=data_train$target, D=ncol(x_train), N=nrow(data_train),
                  x=x_train, pred_x=x_test)
 
 hierarchical_model <- stan(file = 'hierarchical_model.stan', data = standata,
-                           iter = 2000, control = list(adapt_delta = 0.999))
+                           iter = 2000, control = list(adapt_delta = 0.999), seed = 130)
 hie_mon <- monitor(hierarchical_model)
 
 hierarchical_predictions <- data.frame(matrix(0L, ncol = 3, nrow = N_test))
@@ -62,6 +64,12 @@ for (i in 1:N_test) {
 }
 hie_wrong
 
+barplot(hierarchical_predictions$mu, xlim=c(0,53), ylim=c(-0.1,1.1), space=0.2, width=1, names=c(1:33))
+title(ylab='Predicted probability of heart disease', xlab='Prediction')
+points(seq(from=0.7, to=39.1, length.out=33), hierarchical_predictions$target, col='blue', pch=16)
+legend(legend=c("Target", 'Predicted probability'), fill=c('blue','gray'), x='right')
+segments(x0=0, y0=0.5, x1=40, y1=0.5, col='red')
+
 # LOO
 
 hierarchical_loo <- loo(hierarchical_model)
@@ -78,7 +86,7 @@ hierarchical_loo$p_loo
 
 
 separate_model <- stan(file = 'non_hierarchical_model.stan', data = standata,
-                       iter = 2000, control = list(adapt_delta = 0.999))
+                       iter = 2000, control = list(adapt_delta = 0.999), seed = 130)
 sep_mon <- monitor(separate_model)
 
 separate_predictions <- data.frame(matrix(0L, ncol = 3, nrow = N_test))
@@ -97,6 +105,12 @@ for (i in 1:N_test) {
 }
 sep_wrong
 
+barplot(separate_predictions$mu, xlim=c(0,53), ylim=c(-0.1,1.1), space=0.2, width=1, names=c(1:33))
+title(ylab='Predicted probability of heart disease', xlab='Prediction')
+points(seq(from=0.7, to=39.1, length.out=33), separate_predictions$target, col='blue', pch=16)
+legend(legend=c("Target", 'Predicted probability'), fill=c('blue','gray'), x='right')
+segments(x0=0, y0=0.5, x1=40, y1=0.5, col='red')
+
 # LOO
 
 separate_loo <- loo(separate_model)
@@ -107,3 +121,4 @@ abline(a=0.7, b=0, col='red')
 title('k values')
 
 separate_loo$p_loo
+
