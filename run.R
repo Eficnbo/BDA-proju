@@ -122,3 +122,39 @@ title('k values')
 
 separate_loo$p_loo
 
+# MORE PLOTS
+
+par(mfrow = c(1,3))
+hist(data$target, xlab='', main='Observed heart diseases')
+segments(x0=mean(data$target), y0=0, x1=mean(data$target), y1=150, col='blue')
+legend(legend=c("Observed probability", 'Predicted probability'), fill=c('blue','red'), x='topleft')
+hist(separate_preds, xlab='', main='Predicted heart diseases')
+segments(x0=mean(data$target), y0=0, x1=mean(data$target), y1=80000, col='blue')
+segments(x0=mean(separate_preds), y0=0, x1=mean(separate_preds), y1=80000, col='red')
+hist(hierarchical_preds, xlab='', main='Predicted heart diseases, hierarchical')
+segments(x0=mean(data$target), y0=0, x1=mean(data$target), y1=80000, col='blue')
+segments(x0=mean(hierarchical_preds), y0=0, x1=mean(hierarchical_preds), y1=80000, col='red')
+
+par(mfrow = c(2,4))
+hist(separate_draws$`beta_0[1]`, xlab='Beta0_1', main='Posterior of Beta0_1', breaks=20, xlim=c(-3.2,6))
+hist(separate_draws$`beta_0[2]`, xlab='Beta0_2', main='Posterior of Beta0_2', breaks=20, xlim=c(-3.2,6))
+hist(separate_draws$`beta_0[3]`, xlab='Beta0_3', main='Posterior of Beta0_3', breaks=20, xlim=c(-3.2,6))
+hist(separate_draws$`beta_0[4]`, xlab='Beta0_4', main='Posterior of Beta0_4', breaks=20, xlim=c(-3.2,6))
+hist(separate_draws$`beta[1]`, xlab='Beta_1', main='Posterior of Beta_1', breaks=20, xlim=c(-3.2,6))
+hist(separate_draws$`beta[2]`, xlab='Beta_2', main='Posterior of Beta_2', breaks=20, xlim=c(-3.2,6))
+hist(separate_draws$`beta[8]`, xlab='Beta_8', main='Posterior of Beta_8', breaks=20, xlim=c(-3.2,6))
+hist(separate_draws$`beta[3]`, xlab='Beta_3', main='Posterior of Beta_3', breaks=20, xlim=c(-3.2,6))
+
+par(mfrow = c(1,3))
+hist(separate_draws$`beta_0[2]`, xlab='Beta0_2', main='Posterior of Beta0_2', breaks=20, xlim=c(-5,5))
+hist(separate_draws$`beta[2]`, xlab='Beta2', main='Posterior of Beta2', breaks=20, xlim=c(-5,5))
+hist(separate_draws$`beta[3]`, xlab='Beta3', main='Posterior of Beta3', breaks=20, xlim=c(-5,5))
+
+par(mfrow = c(1,3))
+hist(hierarchical_draws$`beta_0[2]`, xlab='Beta0_2', main='Posterior of Beta0_2', breaks=20, xlim=c(-5,5))
+hist(hierarchical_draws$`beta[2,2]`, xlab='Beta2_2', main='Posterior of Beta2_2', breaks=20, xlim=c(-5,5))
+hist(hierarchical_draws$`beta[2,3]`, xlab='Beta3_2', main='Posterior of Beta3_2', breaks=20, xlim=c(-5,5))
+
+
+
+
