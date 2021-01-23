@@ -1,9 +1,11 @@
-# BDA-proju
+# Bayesian Data Analysis - Predicting heart disease
 
-This project is for Bayesian data analysis course.
+In this project we create a hierarchical and a non-hierarchical Bayesian logistic regression model and use them to predict if a hospitalised patient has a heart disease or not. Detailed explanations about the models and project are in project-report.pdf. The project is part of the Aalto University Bayesian Data Analysis 2020 course.
 
-This project contains 2 statistical models that predict if a person has a heart disease. The data set was taken from here https://www.kaggle.com/ronitf/heart-disease-uci
+hierarchical_model.stan and non_hierarchical_model.stan contain the used Stan models.
 
-run.R contains the right settings.
+run.R contains the R code used in the project.
 
-hierarchical_model.stan and non_hierarchical_model.stan are the final models.
+The data set used is from https://www.kaggle.com/ronitf/heart-disease-uci
+
+
