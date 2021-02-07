@@ -155,6 +155,20 @@ hist(hierarchical_draws$`beta_0[2]`, xlab='Beta0_2', main='Posterior of Beta0_2'
 hist(hierarchical_draws$`beta[2,2]`, xlab='Beta2_2', main='Posterior of Beta2_2', breaks=20, xlim=c(-5,5))
 hist(hierarchical_draws$`beta[2,3]`, xlab='Beta3_2', main='Posterior of Beta3_2', breaks=20, xlim=c(-5,5))
 
+plot(sep_mon$Rhat, pch=20, col='red', xlab='variable', ylab='', main='Rhat values')
+points(hie_mon$Rhat, pch=20, col='blue')
+legend(legend=c("non-hierarchical", 'hierarchical'), fill=c('red','blue'), x='topright')
+
+plot(sep_mon$Bulk_ESS, pch=20, ylim=c(0,7500), col='red', xlab='variable', ylab='', main='Bulk ESS values')
+points(hie_mon$Bulk_ESS, pch=20, col='blue')
+abline(a=400, b=0)
+legend(legend=c("non-hierarchical", 'hierarchical'), fill=c('red','blue'), x='topright')
+
+plot(sep_mon$Tail_ESS, pch=20, ylim=c(0,4000), col='red', xlab='variable', ylab='', main='Tail ESS values')
+points(hie_mon$Tail_ESS, pch=20, col='blue')
+abline(a=400, b=0)
+legend(legend=c("non-hierarchical", 'hierarchical'), fill=c('red','blue'), x='topright')
+
 
 
 
